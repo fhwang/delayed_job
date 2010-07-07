@@ -60,6 +60,11 @@ describe Delayed::Job do
     # use be close rather than equal to because millisecond values cn be lost in DB round trip
     Delayed::Job.first.run_at.should be_close(later, 1)
   end
+  
+  it "should be able to set attempts when enqueueing items" do
+    Delayed::Job.enqueue SimpleJob.new, 5, nil, 25
+    Delayed::Job.first.attempts.should == 25
+  end
 
   it "should call perform on jobs when running work_off" do
     SimpleJob.runs.should == 0
